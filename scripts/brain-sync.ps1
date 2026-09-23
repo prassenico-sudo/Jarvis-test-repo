@@ -70,6 +70,7 @@ $ignoreRules = @(
     '*.pfx',
     'secrets.*',
     'credentials*.json',
+    '.obsidian/plugins/obsidian-local-rest-api/data.json',
     'Thumbs.db',
     'desktop.ini'
 )
@@ -81,7 +82,7 @@ if ($missing) { Add-Content -Path $gitignore -Value $missing -Encoding UTF8 }
 # Notizen nach API-Schluesseln / Private Keys durchsuchen
 $secretPattern = '(?i)(api[_-]?key|api[_-]?secret|secret[_-]?key|access[_-]?token|password|passwort)\s*[:=]\s*\S{12,}|sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY-----'
 $suspicious = Get-ChildItem -Recurse -File -Include *.md, *.txt, *.json, *.yaml, *.yml, *.csv, *.py, *.js, *.ts -ErrorAction SilentlyContinue |
-    Where-Object { $_.FullName -notmatch '\\\.git\\|\\\.obsidian\\' } |
+    Where-Object { $_.FullName -notmatch '\\\.git\\' } |
     Where-Object { Select-String -Path $_.FullName -Pattern $secretPattern -Quiet -ErrorAction SilentlyContinue }
 
 if ($suspicious) {
